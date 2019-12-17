@@ -7,4 +7,5 @@ found in the LICENSE file. -->
   <string name="title">Flutter Application</string>
   <string name="button_tap">Flutter button tapped 0 times.</string>
   <string name="android">Android</string>
+    <string name="android_logo">android logo</string>
 </resources>

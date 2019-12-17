@@ -35,13 +35,28 @@ found in the LICENSE file. -->
                 android:text="@string/button_tap"
                 android:textSize="@dimen/font_size" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/edge_margin"
-                android:background="@color/grey"
-                android:text="@string/android"
-                android:textSize="@dimen/platform_label_font_size" />
+            <LinearLayout
+                android:layout_width="214dp"
+                android:layout_height="60dp">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="32dp"
+                    android:layout_height="59dp"
+                    android:contentDescription="@string/android_logo"
+                    app:srcCompat="@drawable/android" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_margin="@dimen/edge_margin"
+                    android:background="@color/grey"
+                    android:text="@string/android"
+                    android:textSize="@dimen/platform_label_font_size"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="16dp" />
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -49,9 +64,10 @@ found in the LICENSE file. -->
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
+            android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/edge_margin"
             android:clickable="true"
+            android:focusable="true"
             android:elevation="@dimen/fab_elevation_resting"
             android:src="@drawable/ic_add_black_24dp"
             app:backgroundTint="@color/white"
