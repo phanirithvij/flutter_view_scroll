@@ -4,7 +4,6 @@ found in the LICENSE file. -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -53,12 +52,12 @@ found in the LICENSE file. -->
             android:layout_margin="@dimen/edge_margin"
             android:clickable="true"
             android:elevation="@dimen/fab_elevation_resting"
+            android:focusable="true"
             android:src="@drawable/ic_add_black_24dp"
             app:backgroundTint="@color/white"
             app:fabSize="normal"
             app:pressedTranslationZ="@dimen/fab_elevation_pressed"
-            app:rippleColor="@color/grey"
-            tools:targetApi="lollipop" />
+            app:rippleColor="@color/grey" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
