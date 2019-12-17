@@ -3,6 +3,8 @@
 # Created by https://www.gitignore.io/api/windows,flutter
 # Edit at https://www.gitignore.io/?templates=windows,flutter
 
+ios/Flutter/flutter_export_environment.sh
+
 ### Flutter ###
 # Flutter/Dart/Pub related
 **/doc/api/
