@@ -21,7 +21,7 @@ found in the LICENSE file. -->
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar.FullScreen"
+            android:theme="@style/Theme.Transparent.Fullscreen"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
