@@ -7,7 +7,6 @@ import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor.DartEntrypoint
@@ -15,8 +14,10 @@ import io.flutter.plugin.common.BasicMessageChannel
 import io.flutter.plugin.common.StringCodec
 import java.util.*
 
+private const val TAG = "MainActivity"
+
 class MainActivity : AppCompatActivity() {
-    private var flutterView: FlutterView? = null
+    var flutterView: FlutterView? = null
     private var counter = 0
     private var messageChannel: BasicMessageChannel<String>? = null
 
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         val viewPager: ViewPager = findViewById(R.id.pages)
         viewPager.adapter = ViewPagerAdaptor(this)
 
-        Log.d("HELP", viewPager.childCount.toString())
+        Log.d(TAG, viewPager.childCount.toString())
 
 
         messageChannel = BasicMessageChannel(flutterEngine!!.dartExecutor, CHANNEL, StringCodec.INSTANCE)
@@ -75,12 +76,10 @@ class MainActivity : AppCompatActivity() {
             onFlutterIncrement()
             reply.reply(EMPTY_MESSAGE)
         }
-        val fab = findViewById<FloatingActionButton>(R.id.button)
-        fab.setOnClickListener { sendAndroidIncrement() }
-        Log.d("HELP", "DONE WITH THIS BULLSHIT")
     }
 
-    private fun sendAndroidIncrement() {
+    fun sendAndroidIncrement() {
+        Log.d(TAG, "++1")
         messageChannel!!.send(PING)
     }
 

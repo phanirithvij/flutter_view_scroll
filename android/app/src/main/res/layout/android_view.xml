@@ -61,11 +61,15 @@
             android:elevation="@dimen/fab_elevation_resting"
             android:focusable="true"
             android:src="@drawable/ic_add_black_24dp"
+            android:theme="@style/Theme.Transparent.Fullscreen"
             app:backgroundTint="@color/white"
             app:fabSize="normal"
             app:pressedTranslationZ="@dimen/fab_elevation_pressed"
             app:rippleColor="@color/grey"
             tools:targetApi="lollipop" />
+        <!-- During viewpager inflation an error occurs and the fix is this -->
+        <!--  The theme attribute is important for some reason even thought it's in the Manifest-->
+        <!--  https://stackoverflow.com/a/52361105/8608146 -->
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
