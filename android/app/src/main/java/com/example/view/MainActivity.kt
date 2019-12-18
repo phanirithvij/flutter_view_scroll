@@ -4,9 +4,12 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor.DartEntrypoint
@@ -69,12 +72,10 @@ class MainActivity : AppCompatActivity() {
         val supportActionBar = supportActionBar
         supportActionBar?.hide()
 
-
         val viewPager: ViewPager = findViewById(R.id.pages)
         viewPager.adapter = ViewPagerAdaptor(this)
 
         Log.d(TAG, viewPager.childCount.toString())
-
 
         messageChannel = BasicMessageChannel(flutterEngine!!.dartExecutor, CHANNEL, StringCodec.INSTANCE)
         messageChannel!!.setMessageHandler { _: String?, reply: BasicMessageChannel.Reply<String> ->
@@ -83,8 +84,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun sendAndroidIncrement() {
-        Log.d(TAG, "++1")
+    // `layout` is a linear Layout defined in R.layout.flutter_view
+    fun onFlutterViewInit(layout: View) {
+        // Initialize the flutterview
+        val transparentFlutterView = FlutterView(applicationContext, FlutterView.TransparencyMode.transparent)
+        transparentFlutterView.id = R.id.flutter_view
+
+        // Add this view i.e. the newly created transparent flutterview to the R.layout.flutter_view
+        (layout as LinearLayout).addView(transparentFlutterView)
+
+        // Attach this newly created flutterview to the running instance of the engine
+        transparentFlutterView.attachToFlutterEngine(flutterEngine!!)
+        this.flutterView = transparentFlutterView
+
+    }
+
+    // `layout` is a constrained layout defined in R.layout.android_view
+    fun onAndroidViewInit(layout: View) {
+        val fab: FloatingActionButton = layout.findViewById(R.id.button)
+        fab.setOnClickListener { sendAndroidIncrement() }
+    }
+
+
+    private fun sendAndroidIncrement() {
         messageChannel!!.send(PING)
     }
 
