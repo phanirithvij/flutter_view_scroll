@@ -1,23 +1,20 @@
-<!-- Copyright 2014 The Flutter Authors. All rights reserved.
-Use of this source code is governed by a BSD-style license that can be
-found in the LICENSE file. -->
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.viewpager.widget.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pages"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:foregroundGravity="center">
+
 
     <io.flutter.embedding.android.FlutterView
         android:id="@+id/flutter_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_height="match_parent" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@android:color/transparent">
 
@@ -73,8 +70,10 @@ found in the LICENSE file. -->
             app:backgroundTint="@color/white"
             app:fabSize="normal"
             app:pressedTranslationZ="@dimen/fab_elevation_pressed"
-            app:rippleColor="@color/grey" />
+            app:rippleColor="@color/grey"
+            tools:targetApi="lollipop" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</LinearLayout>
+
+</androidx.viewpager.widget.ViewPager>

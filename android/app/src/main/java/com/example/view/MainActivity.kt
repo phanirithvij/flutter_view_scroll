@@ -1,16 +1,12 @@
-// Copyright 2014 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 package com.example.view
 
 import android.content.Intent
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
-import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngine
@@ -62,28 +58,18 @@ class MainActivity : AppCompatActivity() {
                     DartEntrypoint.createDefault()
             )
         }
-        setContentView(R.layout.flutter_view_layout)
-
+        setContentView(R.layout.app_layout)
 
         val supportActionBar = supportActionBar
         supportActionBar?.hide()
 
-        flutterView = FlutterView(applicationContext, FlutterView.TransparencyMode.transparent)
 
-        val existingView: FlutterView = findViewById(R.id.flutter_view)
-        val parentView = existingView.parent
-        (existingView.parent as LinearLayout).removeView(existingView)
+        val viewPager: ViewPager = findViewById(R.id.pages)
+        viewPager.adapter = ViewPagerAdaptor(this)
 
-        val layoutParams = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        } else {
-            TODO("VERSION.SDK_INT < KITKAT")
-        }
-        layoutParams.weight = 1f
+        Log.d("HELP", viewPager.childCount.toString())
 
-        (parentView as LinearLayout).addView(flutterView, 0, layoutParams)
 
-        flutterView?.attachToFlutterEngine(flutterEngine!!)
         messageChannel = BasicMessageChannel(flutterEngine!!.dartExecutor, CHANNEL, StringCodec.INSTANCE)
         messageChannel!!.setMessageHandler { _: String?, reply: BasicMessageChannel.Reply<String> ->
             onFlutterIncrement()
@@ -91,6 +77,7 @@ class MainActivity : AppCompatActivity() {
         }
         val fab = findViewById<FloatingActionButton>(R.id.button)
         fab.setOnClickListener { sendAndroidIncrement() }
+        Log.d("HELP", "DONE WITH THIS BULLSHIT")
     }
 
     private fun sendAndroidIncrement() {
@@ -125,7 +112,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private var flutterEngine: FlutterEngine? = null
+        var flutterEngine: FlutterEngine? = null
         private const val CHANNEL = "increment"
         private const val EMPTY_MESSAGE = ""
         private const val PING = "ping"
