@@ -44,10 +44,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        // on device orientation changed
-        // TODO: data on the flutter side is lost when rebuilt
-        // If not recreated the flutterView becomes black
-        recreate()
+        /*
+        on device orientation changed
+        TODO: data on the flutter side is lost when rebuilt
+        If not recreated the flutterView becomes black
+        This was only applicable if flutter_view is not in the same place
+        As a specific layout-land xml was defined
+        So this is no longer a problem as no landscape logic is required now
+        */
+        // recreate()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
