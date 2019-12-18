@@ -1,5 +1,7 @@
 # Example of embedding Flutter using FlutterView
 
+This was taken from [flutter/examples](https://github.com/flutter/flutter/tree/master/examples/flutter_view/)
+
 This project demonstrates how to embed Flutter within an iOS or Android
 application. On iOS, the iOS and Flutter components are built with Xcode. On
 Android, the Android and Flutter components are built with Android Studio or
