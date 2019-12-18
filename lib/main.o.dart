@@ -1,4 +1,10 @@
+// Copyright 2014 The Flutter Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(FlutterView());
@@ -23,17 +29,29 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  static const String _channel = 'increment';
+  static const String _pong = 'pong';
+  static const String _emptyMessage = '';
+  static const BasicMessageChannel<String> platform =
+      BasicMessageChannel<String>(_channel, StringCodec());
+
   int _counter = 0;
 
   @override
   void initState() {
     super.initState();
+    platform.setMessageHandler(_handlePlatformIncrement);
   }
 
-  void _handleIncrement() async {
+  Future<String> _handlePlatformIncrement(String message) async {
     setState(() {
       _counter++;
     });
+    return _emptyMessage;
+  }
+
+  void _sendFlutterIncrement() {
+    platform.send(_pong);
   }
 
   @override
@@ -46,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Expanded(
             child: Center(
               child: Text(
-                  'Button tapped $_counter time${_counter == 1 ? '' : 's'}.',
+                  'Platform button tapped $_counter time${_counter == 1 ? '' : 's'}.',
                   style: const TextStyle(fontSize: 17.0)),
             ),
           ),
@@ -62,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _handleIncrement,
+        onPressed: _sendFlutterIncrement,
         child: const Icon(Icons.add),
       ),
     );
