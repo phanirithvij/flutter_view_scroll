@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 
+
 private const val TAG = "ViewPagerAdaptor"
 
 class ViewPagerAdaptor(private var instance: MainActivity) : PagerAdapter() {

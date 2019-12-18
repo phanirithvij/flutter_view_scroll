@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_view/utils.dart';
 
 void main() {
   runApp(FlutterView());
@@ -11,9 +12,7 @@ class FlutterView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter View',
-      theme: ThemeData(
-        primarySwatch: Colors.grey,
-      ),
+      theme: buildAmoledTheme(),
       home: MyHomePage(),
     );
   }
@@ -31,12 +30,14 @@ class _MyHomePageState extends State<MyHomePage> {
   static const BasicMessageChannel<String> platform =
       BasicMessageChannel<String>(_channel, StringCodec());
 
+  var _enabled = false;
   int _counter = 0;
 
   @override
   void initState() {
     super.initState();
     platform.setMessageHandler(_handlePlatformIncrement);
+    _handleScroll(_enabled);
   }
 
   Future<String> _handlePlatformIncrement(String message) async {
@@ -50,30 +51,54 @@ class _MyHomePageState extends State<MyHomePage> {
     platform.send(_pong);
   }
 
+  void _handleScroll(bool value) {
+    platform.send("${value ? 'enable' : 'disable'}Scroll");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: Stack(
         children: <Widget>[
-          Expanded(
-            child: Center(
-              child: Text(
-                'Platform button tapped $_counter time${_counter == 1 ? '' : 's'}.',
-                style: const TextStyle(fontSize: 17.0),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: Center(
+                  child: Text(
+                    'Platform button tapped $_counter time${_counter == 1 ? '' : 's'}.',
+                    style: const TextStyle(fontSize: 17.0),
+                  ),
+                ),
               ),
-            ),
+              Container(
+                padding: const EdgeInsets.only(bottom: 15.0, left: 5.0),
+                child: Row(
+                  children: <Widget>[
+                    FlutterLogo(size: 43),
+                    const Text('Flutter', style: TextStyle(fontSize: 30.0)),
+                  ],
+                ),
+              ),
+            ],
           ),
-          Container(
-            padding: const EdgeInsets.only(bottom: 15.0, left: 5.0),
-            child: Row(
-              children: <Widget>[
-                FlutterLogo(size: 43),
-                const Text('Flutter', style: TextStyle(fontSize: 30.0)),
-              ],
-            ),
+          PageView(
+            children: <Widget>[
+              Container(color: Colors.amber.withOpacity(0.5)),
+              Container(color: Colors.orange.withOpacity(0.5)),
+              Container(color: Colors.red.withOpacity(0.5)),
+            ],
           ),
+          Center(
+            child: Switch(
+              value: _enabled,
+              onChanged: (bool value) {
+                _handleScroll(value);
+                setState(() => _enabled = value);
+              },
+            ),
+          )
         ],
       ),
       floatingActionButton: FloatingActionButton(

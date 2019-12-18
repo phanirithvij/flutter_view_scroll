@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngine
@@ -20,9 +19,10 @@ import java.util.*
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
-    var flutterView: FlutterView? = null
+    private var flutterView: FlutterView? = null
     private var counter = 0
     private var messageChannel: BasicMessageChannel<String>? = null
+    private lateinit var viewPager: CustomViewPager
 
     private fun getArgsFromIntent(intent: Intent): Array<String?>? {
         // Before adding more entries to this list, consider that arbitrary
@@ -72,16 +72,36 @@ class MainActivity : AppCompatActivity() {
         val supportActionBar = supportActionBar
         supportActionBar?.hide()
 
-        val viewPager: ViewPager = findViewById(R.id.pages)
+        viewPager = findViewById(R.id.pages)
         viewPager.adapter = ViewPagerAdaptor(this)
 
         Log.d(TAG, viewPager.childCount.toString())
 
         messageChannel = BasicMessageChannel(flutterEngine!!.dartExecutor, CHANNEL, StringCodec.INSTANCE)
-        messageChannel!!.setMessageHandler { _: String?, reply: BasicMessageChannel.Reply<String> ->
-            onFlutterIncrement()
-            reply.reply(EMPTY_MESSAGE)
+        messageChannel!!.setMessageHandler(ReplyAgent())
+    }
+
+    inner class ReplyAgent : BasicMessageChannel.MessageHandler<String> {
+        override fun onMessage(s: String?, reply: BasicMessageChannel.Reply<String>) {
+            if (s != null) Log.d(TAG, s)
+            when (s) {
+                "pong" -> {
+                    onFlutterIncrement()
+                    reply.reply(EMPTY_MESSAGE)
+                }
+                "enableScroll" -> {
+                    viewPager.pagingEnabled = true
+                    Log.d(TAG, "pager is ")
+                }
+                "disableScroll" -> {
+                    viewPager.pagingEnabled = false
+                }
+                else -> {
+                    reply.reply("unknown")
+                }
+            }
         }
+
     }
 
     // `layout` is a linear Layout defined in R.layout.flutter_view
@@ -107,6 +127,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun sendAndroidIncrement() {
+        viewPager.pagingEnabled = !viewPager.pagingEnabled
         messageChannel!!.send(PING)
     }
 
