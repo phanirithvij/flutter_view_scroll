@@ -45,6 +45,10 @@ class _MyHomePageState extends State<MyHomePage> {
     _handleScroll(_enabled);
     _controller.addListener(() {
       if (_controller.page >= _numPages - 1.5) {
+        // TODO: A bug
+        // When scrolling from page 3 to android
+        // The scrolling jerks for a second
+
         if (!_lastPageReached) {
           // Send the scroll enable event only once
           _handleScroll(true);
@@ -64,12 +68,14 @@ class _MyHomePageState extends State<MyHomePage> {
         _counter++;
       });
     } else if (message == "scrolled") {
+      /* TODO: This is useless remove it, also remove the code on the java side for it */
       // Scrolled out of android view
       // This will also be fired at the very beginning
       // i.e. When the app was opened
-      print("scrolled global viewpager");
-      _handleScroll(false);
-      setState(() {});
+      // print("scrolled global viewpager");
+      // _handleScroll(false);
+      // setState(() {});
+      _scrolledRightInLastPage = false;
     }
     return _emptyMessage;
   }
@@ -141,6 +147,12 @@ class _MyHomePageState extends State<MyHomePage> {
           // If the PageView is attached to this controller
           // print(_controller.page);
           if (_controller.page > _numPages - 2) {
+            // TODO: A bug
+            // hot restart
+            // go from page 1, 2, 3, android, 3, 2, 3, 2
+            // The swith does not disappear
+            // it is a visual bug but not a breaking bug
+
             // If the page is the last one
             // print("scroll left in last page");
             // Send disable scroll event to android
