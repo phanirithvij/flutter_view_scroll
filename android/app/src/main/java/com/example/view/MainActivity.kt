@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
     // A simple alternative to a method call handler
     inner class ReplyAgent : BasicMessageChannel.MessageHandler<String> {
         override fun onMessage(s: String?, reply: BasicMessageChannel.Reply<String>) {
-            if (s != null) Log.d(TAG, s)
+            // if (s != null) Log.d(TAG, s)
             when (s) {
                 "pong" -> {
                     onFlutterIncrement()
@@ -174,7 +174,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var flutterEngine: FlutterEngine? = null
-        private const val CHANNEL = "increment"
+        private const val CHANNEL = "com.example.view/increment"
         private const val EMPTY_MESSAGE = ""
         private const val PING = "ping"
     }
