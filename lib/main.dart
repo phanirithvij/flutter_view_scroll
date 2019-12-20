@@ -11,7 +11,7 @@ class FlutterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter View',
+      title: 'Flutter Page View concat',
       theme: buildAmoledTheme(),
       home: MyHomePage(),
     );
@@ -24,7 +24,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static const String _channel = 'increment';
+  static const String _channel = 'com.example.view/increment';
   static const String _pong = 'pong';
   static const String _emptyMessage = '';
   static const BasicMessageChannel<String> platform =
@@ -34,12 +34,28 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   int _numPages = 3;
   var _controller = PageController();
+  var _lastPageReached = false;
+  var _scrolledRightInLastPage = false;
 
   @override
   void initState() {
     super.initState();
     platform.setMessageHandler(_handlePlatformIncrement);
+    // Explicitly disable initial scrolling
     _handleScroll(_enabled);
+    _controller.addListener(() {
+      if (_controller.page >= _numPages - 1.5) {
+        if (!_lastPageReached) {
+          // Send the scroll enable event only once
+          _handleScroll(true);
+          setState(() {});
+        }
+        _lastPageReached = true;
+      } else {
+        // If not in last page
+        _lastPageReached = false;
+      }
+    });
   }
 
   Future<String> _handlePlatformIncrement(String message) async {
@@ -49,7 +65,11 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     } else if (message == "scrolled") {
       // Scrolled out of android view
-      print("object");
+      // This will also be fired at the very beginning
+      // i.e. When the app was opened
+      print("scrolled global viewpager");
+      _handleScroll(false);
+      setState(() {});
     }
     return _emptyMessage;
   }
@@ -58,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
     platform.send(_pong);
   }
 
+  // Enable/Disable the global viewpager scrolling
   void _handleScroll(bool value) {
     platform.send("${value ? 'enable' : 'disable'}Scroll");
     _enabled = value;
@@ -66,6 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // To make the whole app look transparent
       backgroundColor: Colors.transparent,
       body: Stack(
         children: <Widget>[
@@ -78,6 +100,9 @@ class _MyHomePageState extends State<MyHomePage> {
               Page(color: Colors.red.withOpacity(0.5)),
             ],
           ),
+          // A simple siwtch to see when it is getting enabled
+          // And also manually enable/disable scrolling
+          // Which will be immediately overriden by the subsequent scrolls
           Center(
             child: Switch(
               value: _enabled,
@@ -87,8 +112,10 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
           ),
+          // GestureDetector doesn't work here
+          // That is explained in my comment in this issue
+          // https://github.com/flutter/flutter/issues/47434#issuecomment-567820204
           Listener(
-            // onHorizontalDragUpdate: (e) => print(e),
             onPointerMove: _onPointerMove,
             behavior: HitTestBehavior.translucent,
             child: IgnorePointer(child: Container(color: Colors.transparent)),
@@ -102,26 +129,32 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // A callback for the Listener's on PointerMoveEvent
   void _onPointerMove(PointerMoveEvent event) {
+    // Look at event.delta's explaination
     if (event.delta.dx.abs() >= event.delta.dy.abs()) {
-      // Horizontal movement
-      if (event.delta.dx < 0) {
-        // Drag left
+      // X offset is greater than Y offset => Horizontal movement
+      if (event.delta.dx > 0) {
+        // Pointer moved along +ve x axis
+        // Drag right i.e. scroll left
         if (_controller.hasClients) {
+          // If the PageView is attached to this controller
           // print(_controller.page);
-          if (_controller.page >= _numPages - 1 - 0.5) {
-            // print("drag left in last page");
-            _handleScroll(true);
-            setState(() {});
-          }
-        }
-      } else {
-        if (_controller.hasClients) {
-          // print(_controller.page);
-          if (_controller.page >= _numPages - 2) {
-            // print("drag right in last page");
+          if (_controller.page > _numPages - 2) {
+            // If the page is the last one
+            // print("scroll left in last page");
+            // Send disable scroll event to android
             _handleScroll(false);
-            setState(() {});
+            if (!_scrolledRightInLastPage) {
+              // Set state only once to prevent many rebuilds
+              setState(() {
+                print("set state");
+              });
+            }
+            _scrolledRightInLastPage = true;
+          } else {
+            // If not scrolled right in last page
+            _scrolledRightInLastPage = false;
           }
         }
       }
@@ -144,6 +177,7 @@ class Page extends StatelessWidget {
   }
 }
 
+// A temporary widget to show the data transfer b/w flutter and jvm
 class TempWidget extends StatelessWidget {
   const TempWidget({
     Key key,
