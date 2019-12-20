@@ -2,12 +2,14 @@ package com.example.view
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngine
@@ -75,12 +77,25 @@ class MainActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.pages)
         viewPager.adapter = ViewPagerAdaptor(this)
 
+        viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels)
+//                Log.d(TAG, position.toString())
+//                Log.d(TAG, positionOffset.toString())
+//                Log.d(TAG, positionOffsetPixels.toString())
+                if (position + positionOffset == 0f) {
+                    messageChannel?.send("scrolled")
+                }
+            }
+        })
+
         Log.d(TAG, viewPager.childCount.toString())
 
         messageChannel = BasicMessageChannel(flutterEngine!!.dartExecutor, CHANNEL, StringCodec.INSTANCE)
         messageChannel!!.setMessageHandler(ReplyAgent())
     }
 
+    // A simple alternative to a method call handler
     inner class ReplyAgent : BasicMessageChannel.MessageHandler<String> {
         override fun onMessage(s: String?, reply: BasicMessageChannel.Reply<String>) {
             if (s != null) Log.d(TAG, s)
@@ -91,7 +106,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 "enableScroll" -> {
                     viewPager.pagingEnabled = true
-                    Log.d(TAG, "pager is ")
                 }
                 "disableScroll" -> {
                     viewPager.pagingEnabled = false
@@ -127,7 +141,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun sendAndroidIncrement() {
-        viewPager.pagingEnabled = !viewPager.pagingEnabled
+        // viewPager.pagingEnabled = !viewPager.pagingEnabled
         messageChannel!!.send(PING)
     }
 
@@ -164,4 +178,18 @@ class MainActivity : AppCompatActivity() {
         private const val EMPTY_MESSAGE = ""
         private const val PING = "ping"
     }
+
+    fun openHomeSettings() {
+        val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Intent(android.provider.Settings.ACTION_HOME_SETTINGS)
+        } else {
+            TODO("VERSION.SDK_INT < N")
+            // This can be done I think https://github.com/Neamar/KISS/blob/68189e4f6cc23b907f2058567793ae455e1fe99c/app/src/main/java/fr/neamar/kiss/preference/DefaultLauncherPreference.java
+            // TODO: Test this across multiple devices first to decide what to keep
+        }
+        startActivity(intent)
+    }
 }
+
+// TODO: Test All my apps on emulators, Realme 5 Pro, Redmi note 4, Moto g5, Moto C
+//  If possible a TV emulator

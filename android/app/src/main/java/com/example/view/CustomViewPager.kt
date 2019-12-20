@@ -9,7 +9,7 @@ import androidx.viewpager.widget.ViewPager
 // https://stackoverflow.com/a/13437997/8608146
 class CustomViewPager(context: Context, attrs: AttributeSet?) : ViewPager(context, attrs) {
 
-    private var _enabled: Boolean = true
+    private var _enabled: Boolean = false
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (_enabled) {

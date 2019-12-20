@@ -1,0 +1,9 @@
+D/ViewRootImpl(10936): Swipe From Side Rotation 0 mIgnoring true downX 1031 downY 1549 mScreenHeight 2340 mScreenWidth 1080 mStatusBarHeight 54 globalScale 1.125
+D/ViewRootImpl(10936): Swipe From Side Rotation 0 mIgnoring true downX 1031 downY 1549 mScreenHeight 2340 mScreenWidth 1080 mStatusBarHeight 54 globalScale 1.125
+D/ViewRootImpl(10936): swipeFromBottom mIgnoring === false downY 1549 mStatusBarHeight 54
+I/es.flutter_vie(10936): Thread[3,tid=10944,WaitingInMainSignalCatcherLoop,Thread*=0x7606c16400,peer=0x12e40950,"Signal Catcher"]: reacting to signal 3
+I/es.flutter_vie(10936):
+I/es.flutter_vie(10936): call HandleSigQuit
+I/Choreographer(10936): Skipped 10 frames!  The application may be doing too much work on its main thread.
+I/es.flutter_vie(10936): Wrote stack traces to '[tombstoned]'
+Lost connection to device.
