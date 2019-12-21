@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_view/utils.dart';
 
@@ -35,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _numPages = 3;
   var _controller = PageController();
   var _lastPageReached = false;
-  var _scrolledRightInLastPage = false;
+  var _scrolledLeftInLastPage = false;
 
   @override
   void initState() {
@@ -44,20 +45,27 @@ class _MyHomePageState extends State<MyHomePage> {
     // Explicitly disable initial scrolling
     _handleScroll(_enabled);
     _controller.addListener(() {
-      if (_controller.page >= _numPages - 1.5) {
-        // TODO: A bug
-        // When scrolling from page 3 to android
-        // The scrolling jerks for a second
+      // print();
+      if (_controller.position.userScrollDirection == ScrollDirection.reverse) {
+        if (_controller.page >= _numPages - 1.5) {
+          // WONTFIX: A bug
+          // When scrolling from page 3 to android
+          // The scrolling jerks for a second
+          // If setState is called
 
-        if (!_lastPageReached) {
-          // Send the scroll enable event only once
-          _handleScroll(true);
-          setState(() {});
+          if (!_lastPageReached) {
+            // Send the scroll enable event only once
+            _handleScroll(true);
+            setState(() {
+              //   // print("setState 59");
+            });
+          }
+          _lastPageReached = true;
+          _scrolledLeftInLastPage = false;
+        } else {
+          // If not in last page
+          _lastPageReached = false;
         }
-        _lastPageReached = true;
-      } else {
-        // If not in last page
-        _lastPageReached = false;
       }
     });
   }
@@ -75,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // print("scrolled global viewpager");
       // _handleScroll(false);
       // setState(() {});
-      _scrolledRightInLastPage = false;
+      // _scrolledLeftInLastPage = false;
     }
     return _emptyMessage;
   }
@@ -86,6 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Enable/Disable the global viewpager scrolling
   void _handleScroll(bool value) {
+    // print("Scroll event...");
     platform.send("${value ? 'enable' : 'disable'}Scroll");
     _enabled = value;
   }
@@ -99,6 +108,9 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           TempWidget(counter: _counter),
           PageView(
+            onPageChanged: (pno) {
+              print("Page changed to $pno");
+            },
             controller: _controller,
             children: <Widget>[
               Page(color: Colors.amber.withOpacity(0.5)),
@@ -114,7 +126,9 @@ class _MyHomePageState extends State<MyHomePage> {
               value: _enabled,
               onChanged: (bool value) {
                 _handleScroll(value);
-                setState(() {});
+                setState(() {
+                  //   // print("setState");
+                });
               },
             ),
           ),
@@ -147,27 +161,35 @@ class _MyHomePageState extends State<MyHomePage> {
           // If the PageView is attached to this controller
           // print(_controller.page);
           if (_controller.page > _numPages - 2) {
-            // TODO: A bug
-            // hot restart
-            // go from page 1, 2, 3, android, 3, 2, 3, 2
-            // The swith does not disappear
-            // it is a visual bug but not a breaking bug
-
             // If the page is the last one
-            // print("scroll left in last page");
+            // print("scroll left in last page $_scrolledLeftInLastPage");
             // Send disable scroll event to android
             _handleScroll(false);
-            if (!_scrolledRightInLastPage) {
+            if (!_scrolledLeftInLastPage) {
               // Set state only once to prevent many rebuilds
               setState(() {
-                print("set state");
+                //   // print("set state");
               });
             }
-            _scrolledRightInLastPage = true;
+            _scrolledLeftInLastPage = true;
           } else {
             // If not scrolled right in last page
-            _scrolledRightInLastPage = false;
+            _scrolledLeftInLastPage = false;
+            // print("else $_scrolledLeftInLastPage");
           }
+        }
+      } else {
+        if (_controller.page == _numPages - 1) {
+          // DONE: A Bug
+          // hot restart
+          // scroll from 1, 2, 3 then slightly scroll in 2's direction
+          // the scroll gets disabled
+          // So if user scrolls right
+          // Scrolling right in last page
+          // But the global scroll is disabled
+          print("exactly ${_numPages - 1}");
+          _handleScroll(true);
+          setState(() {});
         }
       }
     }
