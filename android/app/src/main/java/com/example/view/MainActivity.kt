@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngine
@@ -123,7 +122,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     // `layout` is a constrained layout defined in R.layout.android_view
-    fun onAndroidViewInit(layout: View) {
+    fun onAndroidViewInit(layout: View, id: Int?) {
+        layout.id = id!!
+        // MUST initialize with the existing values'
+        updateViews()
         val fab: FloatingActionButton = layout.findViewById(R.id.button)
         fab.setOnClickListener { sendAndroidIncrement() }
     }
@@ -136,9 +138,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun onFlutterIncrement() {
         counter++
-        val textView = findViewById<TextView>(R.id.button_tap)
+        updateViews()
+    }
+
+    private fun updateViews() {
+        val layout0 = findViewById<LinearLayout>(R.id.android_view0)
+        val layout = findViewById<LinearLayout>(R.id.android_view)
+        val textView0 = layout0?.findViewById<TextView>(R.id.button_tap)
+        val textView = layout?.findViewById<TextView>(R.id.button_tap)
         val value = "Flutter button tapped " + counter + if (counter == 1) " time" else " times"
-        textView.text = value
+        textView0?.text = value
+        textView?.text = value
+
     }
 
     override fun onResume() {

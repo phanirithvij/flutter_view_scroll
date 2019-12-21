@@ -31,7 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static const BasicMessageChannel<String> platform =
       BasicMessageChannel<String>(_channel, StringCodec());
 
-  var _enabled = false;
+  var _enabled = true;
   int _counter = 0;
   int _numPages = 3;
   var _controller = PageController();
@@ -45,10 +45,11 @@ class _MyHomePageState extends State<MyHomePage> {
     // Explicitly disable initial scrolling
     _handleScroll(_enabled);
     _controller.addListener(() {
-      // print();
       if (_controller.position.userScrollDirection == ScrollDirection.reverse) {
+        // Scroll to the right
         if (_controller.page >= _numPages - 1.5) {
-          // WONTFIX: A bug
+          // If page is last page
+          // TODO: CANTFIX: A bug
           // When scrolling from page 3 to android
           // The scrolling jerks for a second
           // If setState is called
@@ -57,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
             // Send the scroll enable event only once
             _handleScroll(true);
             setState(() {
-              //   // print("setState 59");
+              // print("setState 59");
             });
           }
           _lastPageReached = true;
@@ -129,11 +130,12 @@ class _MyHomePageState extends State<MyHomePage> {
           Listener(
             onPointerMove: _onPointerMove,
             behavior: HitTestBehavior.translucent,
-            child: IgnorePointer(child: Container(color: Colors.transparent)),
           )
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        tooltip: "increment",
+        splashColor: Colors.white54,
         onPressed: _sendFlutterIncrement,
         child: const Icon(Icons.add),
       ),

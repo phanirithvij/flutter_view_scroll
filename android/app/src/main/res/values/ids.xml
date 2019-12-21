@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="flutter_view" type="id" />
+    <item name="button_tap0" type="id" />
+    <item name="android_view0" type="id" />
+    <item name="android_view" type="id" />
 </resources>

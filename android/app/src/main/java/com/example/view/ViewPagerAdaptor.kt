@@ -17,7 +17,7 @@ class ViewPagerAdaptor(private var instance: MainActivity) : PagerAdapter() {
     }
 
     override fun getCount(): Int {
-        return 2
+        return 3
     }
 
     override fun instantiateItem(pagerContainer: ViewGroup, position: Int): Any {
@@ -33,7 +33,9 @@ class ViewPagerAdaptor(private var instance: MainActivity) : PagerAdapter() {
             // If the layout is flutter_view
             PageModel.FLUTTER.name -> instance.onFlutterViewInit(layout)
             // If the layout is android_view
-            PageModel.ANDROID.name -> instance.onAndroidViewInit(layout)
+            PageModel.ANDROID.name -> instance.onAndroidViewInit(layout, p.id)
+            // If it is page 0
+            PageModel.ANDROID0.name -> instance.onAndroidViewInit(layout, p.id)
         }
         return layout
     }
@@ -43,5 +45,4 @@ class ViewPagerAdaptor(private var instance: MainActivity) : PagerAdapter() {
         container.removeView(`object` as View?)
         println("removing... $`object`")
     }
-
 }
