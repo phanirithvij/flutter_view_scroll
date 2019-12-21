@@ -77,17 +77,6 @@ class MainActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.pages)
         viewPager.adapter = ViewPagerAdaptor(this)
 
-        viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                super.onPageScrolled(position, positionOffset, positionOffsetPixels)
-//                Log.d(TAG, position.toString())
-//                Log.d(TAG, positionOffset.toString())
-//                Log.d(TAG, positionOffsetPixels.toString())
-                if (position + positionOffset == 0f) {
-                    messageChannel?.send("scrolled")
-                }
-            }
-        })
 
         Log.d(TAG, viewPager.childCount.toString())
 

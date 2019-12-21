@@ -75,15 +75,6 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         _counter++;
       });
-    } else if (message == "scrolled") {
-      /* TODO: This is useless remove it, also remove the code on the java side for it */
-      // Scrolled out of android view
-      // This will also be fired at the very beginning
-      // i.e. When the app was opened
-      // print("scrolled global viewpager");
-      // _handleScroll(false);
-      // setState(() {});
-      // _scrolledLeftInLastPage = false;
     }
     return _emptyMessage;
   }
