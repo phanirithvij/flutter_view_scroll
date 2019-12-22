@@ -36,7 +36,12 @@ class _MyHomePageState extends State<MyHomePage> {
   int _numPages = 3;
   var _controller = PageController();
   var _lastPageReached = false;
-  var _scrolledLeftInLastPage = false;
+  var _firstPageReached = true;
+  bool _scrolledLeftInLastPage = false;
+  bool _scrolledRightInFirstPage = false;
+
+  var _noScroll = NeverScrollableScrollPhysics();
+  var _canScroll = PageScrollPhysics();
 
   @override
   void initState() {
@@ -66,6 +71,23 @@ class _MyHomePageState extends State<MyHomePage> {
         } else {
           // If not in last page
           _lastPageReached = false;
+        }
+      } else {
+        // Scroll to the left
+        if (_controller.page <= 0.5) {
+          // If page is first page
+          if (!_firstPageReached) {
+            // Send the scroll enable event only once
+            _handleScroll(true);
+            setState(() {
+              print("setState 59");
+            });
+          }
+          _firstPageReached = true;
+          _scrolledRightInFirstPage = false;
+        } else {
+          // If not in first page
+          _firstPageReached = false;
         }
       }
     });
@@ -100,6 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           TempWidget(counter: _counter),
           PageView(
+            // physics: _enabled ? _noScroll : _canScroll,
             onPageChanged: (pno) {
               print("Page changed to $pno");
             },
@@ -144,14 +167,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // A callback for the Listener's on PointerMoveEvent
   void _onPointerMove(PointerMoveEvent event) {
+    // print(_controller.page);
     // Look at event.delta's explaination
-    if (event.delta.dx.abs() >= event.delta.dy.abs()) {
-      // X offset is greater than Y offset => Horizontal movement
-      if (event.delta.dx > 0) {
-        // Pointer moved along +ve x axis
-        // Drag right i.e. scroll left
-        if (_controller.hasClients) {
-          // If the PageView is attached to this controller
+    if (_controller.hasClients) {
+      // If the PageView is attached to this controller
+      if (event.delta.dx.abs() >= event.delta.dy.abs()) {
+        // X offset is greater than Y offset => Horizontal movement
+        if (event.delta.dx > 0) {
+          // Pointer moved along +ve x axis
+          // Drag right i.e. scroll left
           // print(_controller.page);
           if (_controller.page > _numPages - 2) {
             // If the page is the last one
@@ -161,28 +185,53 @@ class _MyHomePageState extends State<MyHomePage> {
             if (!_scrolledLeftInLastPage) {
               // Set state only once to prevent many rebuilds
               setState(() {
-                //   // print("set state");
+                // print("set state 189");
               });
             }
             _scrolledLeftInLastPage = true;
           } else {
-            // If not scrolled right in last page
             _scrolledLeftInLastPage = false;
-            // print("else $_scrolledLeftInLastPage");
           }
-        }
-      } else {
-        if (_controller.page == _numPages - 1) {
-          // DONE: A Bug
-          // hot restart
-          // scroll from 1, 2, 3 then slightly scroll in 2's direction
-          // the scroll gets disabled
-          // So if user scrolls right
-          // Scrolling right in last page
-          // But the global scroll is disabled
-          print("exactly ${_numPages - 1}");
-          _handleScroll(true);
-          setState(() {});
+
+          print(_controller.page);
+          if (_controller.page == 0) {
+            // DONE: A Bug
+            // hot restart
+            // scroll from 1, 2, 1 then slightly scroll in 2's direction
+            // the scroll gets disabled
+            // So if user scrolls right
+            // Scrolling right in last page
+            // But the global scroll is disabled
+            print("exactly ${0}");
+            _handleScroll(true);
+            setState(() {});
+          }
+        } else {
+          if (_controller.page < 1) {
+            // If not scrolled right in firsts page
+            print("else if $_scrolledRightInFirstPage");
+            _handleScroll(false);
+            if (!_scrolledRightInFirstPage) {
+              setState(() {});
+            }
+            _scrolledRightInFirstPage = true;
+          } else {
+            // If not scrolled right in first page
+            _scrolledRightInFirstPage = false;
+          }
+
+          if (_controller.page == _numPages - 1) {
+            // DONE: A Bug
+            // hot restart
+            // scroll from 1, 2, 3 then slightly scroll in 2's direction
+            // the scroll gets disabled
+            // So if user scrolls right
+            // Scrolling right in last page
+            // But the global scroll is disabled
+            print("exactly ${_numPages - 1}");
+            _handleScroll(true);
+            setState(() {});
+          }
         }
       }
     }

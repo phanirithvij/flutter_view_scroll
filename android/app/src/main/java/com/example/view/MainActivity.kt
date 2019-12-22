@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngine
@@ -76,6 +77,45 @@ class MainActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.pages)
         viewPager.adapter = ViewPagerAdaptor(this)
 
+        var xOffset = 0f
+
+        with(viewPager) {
+            addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                //                https://bit.ly/32gnXsh
+                override fun onPageScrollStateChanged(state: Int) {
+                    when (state) {
+                        ViewPager.SCROLL_STATE_DRAGGING -> {
+                            println("Drag scroll $state")
+                        }
+                        ViewPager.SCROLL_STATE_IDLE -> {
+                            println("Idle scroll $state")
+                        }
+                        ViewPager.SCROLL_STATE_SETTLING -> {
+                            println("Scroll settled or stopped $state")
+                            Log.d(TAG, xOffset.toString())
+                        }
+                    }
+                }
+
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+//                    Log.d("main", position.toString())
+//                    Log.d("main", positionOffset.toString())
+//                    Log.d("main", positionOffsetPixels.toString())
+                    xOffset = (position + positionOffset)
+//                    if (xOffset >= 0.6){
+//                        Log.d(TAG, xOffset.toString())
+//                    }
+//                    wallpaperManager.setWallpaperOffsets(viewPager.windowToken, xOffset, 0.0f)
+                }
+
+                override fun onPageSelected(position: Int) {
+//                    dock.text = pageModels[position].label
+//                    currentPage = position
+                    println("Page selected $position")
+                    println("Current Item $currentItem")
+                }
+            })
+        }
 
         Log.d(TAG, viewPager.childCount.toString())
 

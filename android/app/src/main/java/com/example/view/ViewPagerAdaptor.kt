@@ -1,6 +1,5 @@
 package com.example.view
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +20,7 @@ class ViewPagerAdaptor(private var instance: MainActivity) : PagerAdapter() {
     }
 
     override fun instantiateItem(pagerContainer: ViewGroup, position: Int): Any {
-        Log.d(TAG, "Adding a page to viewpager at index $position")
+//        Log.d(TAG, "Adding a page to viewpager at index $position")
         val p: PageModel = PageModel.values()[position]
         layoutInflater = LayoutInflater.from(instance.applicationContext)
         val layout = layoutInflater.inflate(p.layout, pagerContainer, false)
@@ -43,6 +42,6 @@ class ViewPagerAdaptor(private var instance: MainActivity) : PagerAdapter() {
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         // https://stackoverflow.com/a/26654608/8608146
         container.removeView(`object` as View?)
-        println("removing... $`object`")
+//        println("removing... $`object`")
     }
 }
