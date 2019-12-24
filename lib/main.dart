@@ -27,10 +27,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   static const String _channel = 'com.example.view/increment';
   static const String _pong = 'pong';
-  static const String _emptyMessage = '';
   static const BasicMessageChannel<String> platform =
       BasicMessageChannel<String>(_channel, StringCodec());
 
+  var _active = false;
   var _enabled = true;
   int _counter = 0;
   int _numPages = 3;
@@ -95,11 +95,26 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<String> _handlePlatformIncrement(String message) async {
     if (message == "ping") {
-      setState(() {
-        _counter++;
-      });
+      if (mounted)
+        setState(() {
+          _counter++;
+        });
+    } else if (message == "active") {
+      // Flutterview is the current view
+      _active = true;
+      if (mounted)
+        setState(() {
+          _enabled = false;
+        });
+    } else if (message == "background") {
+      // Flutterview was pushed to background
+      _active = false;
+      if (mounted)
+        setState(() {
+          _enabled = true;
+        });
     }
-    return _emptyMessage;
+    return '';
   }
 
   void _sendFlutterIncrement() {
@@ -124,6 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
           PageView(
             // physics: _enabled ? _noScroll : _canScroll,
             onPageChanged: (pno) {
+              platform.send("page$pno");
               print("Page changed to $pno");
             },
             controller: _controller,
@@ -208,7 +224,7 @@ class _MyHomePageState extends State<MyHomePage> {
           }
         } else {
           if (_controller.page < 1) {
-            // If not scrolled right in firsts page
+            // If not scrolled right in first page
             print("else if $_scrolledRightInFirstPage");
             _handleScroll(false);
             if (!_scrolledRightInFirstPage) {

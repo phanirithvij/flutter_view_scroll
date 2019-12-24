@@ -24,6 +24,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/button_tap"
+                android:textColor="@android:color/white"
                 android:textSize="@dimen/font_size" />
 
             <LinearLayout
@@ -37,6 +38,7 @@
                     android:layout_margin="@dimen/edge_margin"
                     android:background="@android:color/transparent"
                     android:text="@string/android"
+                    android:textColor="@android:color/white"
                     android:textSize="@dimen/platform_label_font_size"
                     tools:layout_editor_absoluteX="16dp"
                     tools:layout_editor_absoluteY="16dp" />
