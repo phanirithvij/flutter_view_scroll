@@ -1,7 +1,6 @@
 package com.example.view
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import io.flutter.embedding.android.FlutterTextureView
 import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor.DartEntrypoint
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         pages.add(PageModel.FLUTTER)
         pages.add(PageModel.ANDROID)
         pages.add(PageModel.ANDROID)
-        flutterIndex = 2
+        flutterIndex = 2    
         // done initializing pages
 
 
@@ -172,9 +172,13 @@ class MainActivity : AppCompatActivity() {
     // `layout` is a linear Layout defined in R.layout.flutter_view
     fun onFlutterViewInit(layout: View) {
         // Initialize the flutterview
-        val transparentFlutterView = FlutterView(applicationContext, FlutterView.TransparencyMode.transparent)
+        val transparentFlutterView = FlutterView(applicationContext, FlutterTextureView(applicationContext))
         transparentFlutterView.id = R.id.flutter_view
         ids.add(R.id.flutter_view)
+
+//        val transparentFlutterView = FlutterView(applicationContext, FlutterView.TransparencyMode.transparent)
+//        transparentFlutterView.id = R.id.flutter_view
+//        ids.add(R.id.flutter_view)
 
         // Add this view i.e. the newly created transparent flutterview to the R.layout.flutter_view
         (layout as LinearLayout).addView(transparentFlutterView)
@@ -188,11 +192,12 @@ class MainActivity : AppCompatActivity() {
     fun onAndroidViewInit(layout: View) {
         // create a new id
         // https://stackoverflow.com/a/35551268/8608146
-        val id = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            View.generateViewId()
-        } else {
-            ViewCompat.generateViewId()
-        }
+//        val id = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//            View.generateViewId()
+//        } else {
+//            ViewCompat.generateViewId()
+//        }
+        val id = 3814978 + ViewCompat.generateViewId()
         layout.id = id
         ids.add(layout.id)
         Log.d(TAG, "New id is ${layout.id}")
